@@ -38,15 +38,6 @@ export const Input = styled.input`
   transition: all 0.2s ease;
 `;
 
-export const Helper = styled.p`
-  width: 100%;
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: -5px;
-  margin-bottom: 12px;
-  margin-left: 16px;
-`;
-
 export const SubmitButton = styled.button`
   width: 361px;
   height: 37px;
