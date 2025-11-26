@@ -1,14 +1,16 @@
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
-import HelperText from "./HelperText";
 import LoginButton from "./LoginButton";
 import useLoginForm from "../../hooks/useLoginForm";
+import { Link } from "react-router-dom";
 
 import {
   LoginWrapper,
   LoginFormBox,
   SignupLink,
 } from "../../styles/login/form.style";
+
+import InputHelper from "../common/inputs/InputHelper";
 
 function LoginForm() {
   const {
@@ -42,7 +44,7 @@ function LoginForm() {
           onKeyDown={onSpacePrevent}
         />
 
-        <HelperText message={helper} />
+        <InputHelper message={helper} />
       </LoginFormBox>
 
       <LoginButton
@@ -51,13 +53,7 @@ function LoginForm() {
         onClick={handleLogin}
       />
 
-      <SignupLink
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          window.location.href = "/signup_1.html";
-        }}
-      >
+      <SignupLink as={Link} to="/signup/step1">
         회원가입
       </SignupLink>
     </LoginWrapper>
