@@ -1,24 +1,19 @@
+import React from "react";
 import InputHelper from "../../common/inputs/InputHelper";
-import {
-  InputGroup,
-  Label,
-  InputWrapper,
-  Input,
-} from "../../../styles/signup/signup.style";
+import TextInput from "../../common/inputs/TextInput";
+import { InputGroup } from "../../../styles/signup/signup.style";
 
-function NicknameInput({ value, onChange, helper }) {
+function NicknameInput({ value, onChange, helper, onBlur }) {
   return (
     <InputGroup>
-      <Label>닉네임</Label>
-      <InputWrapper>
-        <Input
-          type="text"
-          maxLength={10}
-          placeholder="닉네임을 입력해주세요."
-          value={value}
-          onChange={onChange}
-        />
-      </InputWrapper>
+      <TextInput
+        label="닉네임"
+        type="text"
+        placeholder="닉네임을 입력해주세요."
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+      />
       <InputHelper message={helper} />
     </InputGroup>
   );

@@ -1,5 +1,11 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { loginRequest } from "../api/auth";
+import {
+  validateEmailValue,
+  validatePasswordValue,
+  EMAIL_REGEX,
+  PASSWORD_REGEX,
+} from "../../utils/InputValidators";
 
 export default function useLoginForm() {
   const [email, setEmail] = useState("");
@@ -7,68 +13,32 @@ export default function useLoginForm() {
   const [helper, setHelper] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+~\-=[\]{};':"\\|,.<>/?]).{8,}$/;
-
-  // 이메일 검증
-  const validateEmail = (value) => {
-    if (!value.trim()) {
-      setHelper("* 이메일을 입력해주세요.");
-      return false;
-    }
-    if (!emailRegex.test(value.trim())) {
-      setHelper("* 올바른 이메일 형식을 입력해주세요.");
-      return false;
-    }
-    setHelper("");
-    return true;
-  };
-
-  // 비밀번호 검증
-  const validatePassword = (value) => {
-    if (!value.trim()) {
-      setHelper("* 비밀번호를 입력해주세요.");
-      return false;
-    }
-    if (!passwordRegex.test(value.trim())) {
-      setHelper("* 비밀번호는 대문자/소문자/숫자/특수문자 포함해야 합니다.");
-      return false;
-    }
-    setHelper("");
-    return true;
-  };
-
   // 입력 핸들러
-  const onEmailChange = (e) => {
+  // 자식에게 내려가므로 useCallback 필요
+  const onEmailChange = useCallback((e) => {
     const v = e.target.value.replace(/\s+/g, "");
     setEmail(v);
-    validateEmail(v);
-  };
+    setHelper(validateEmailValue(v));
+  }, []);
 
-  const onPasswordChange = (e) => {
+  const onPasswordChange = useCallback((e) => {
     const v = e.target.value.replace(/\s+/g, "");
     setPassword(v);
-    validatePassword(v);
-  };
+    setHelper(validatePasswordValue(v));
+  }, []);
 
   // blur 핸들러
-  const onEmailBlur = () => validateEmail(email);
-  const onPasswordBlur = () => validatePassword(password);
+  const onEmailBlur = () => validateEmailValue(email);
+  const onPasswordBlur = () => validatePasswordValue(password);
 
-  // 스페이스 방지
-  const onSpacePrevent = (e) => {
-    if (e.key === " ") {
-      e.preventDefault();
-      setHelper("* 공백은 입력할 수 없습니다.");
-    }
-  };
-
-  // 로그인 버튼 활성화 여부
-  const isActive = emailRegex.test(email) && passwordRegex.test(password);
+  // 의존하는 값에 따라 결정되는 값 => useMemo
+  const isActive = useMemo(
+    () => EMAIL_REGEX.test(email) && PASSWORD_REGEX.test(password),
+    [email, password]
+  );
 
   // 로그인
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     if (!isActive) return;
 
     setIsLoading(true);
@@ -97,15 +67,25 @@ export default function useLoginForm() {
       //   console.error(error);
       const msg = error.message;
 
-      //   console.log(msg);
+      console.log(msg);
 
       if (msg === "invalid_credentials") {
         setHelper("이메일 또는 비밀번호가 일치하지 않습니다.");
+      } else if (msg === "deleted_or_not_found_user") {
+        setHelper("탈퇴한 계정입니다.");
       } else {
         setHelper("서버 오류입니다. 다시 시도해주세요.");
       }
     } finally {
       setIsLoading(false);
+    }
+  }, [email, password, isActive]);
+
+  // 스페이스 방지
+  const onSpacePrevent = (e) => {
+    if (e.key === " ") {
+      e.preventDefault();
+      setHelper("* 공백은 입력할 수 없습니다.");
     }
   };
 

@@ -1,8 +1,8 @@
 import FormButton from "../../common/buttons/FormButton";
 
-function NextButton({ disabled, onClick }) {
+function NextButton({ isActive, onClick }) {
   return (
-    <FormButton disabled={disabled} onClick={onClick}>
+    <FormButton disabled={!isActive} onClick={onClick}>
       다음
     </FormButton>
   );

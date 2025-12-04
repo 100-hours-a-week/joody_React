@@ -8,9 +8,10 @@ function SignupFormStep2() {
   const {
     avatarPreview,
     nickname,
-    helperAvatar,
     helperNickname,
+    helperAvatar,
     onAvatarChange,
+    onNicknameBlur,
     onNicknameChange,
     handleSubmit,
     isConfirmActive,
@@ -30,9 +31,10 @@ function SignupFormStep2() {
       />
 
       <NicknameInput
-        nickname={nickname}
+        {...nickname.bind}
+        helper={helperNickname || nickname.error}
         onChange={onNicknameChange}
-        helper={helperNickname}
+        onBlur={onNicknameBlur}
       />
 
       <ConfirmButton
