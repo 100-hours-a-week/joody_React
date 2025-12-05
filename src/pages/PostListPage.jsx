@@ -1,0 +1,24 @@
+import MainHeader from "../components/common/header/MainHeader";
+import PostListLayout from "../components/PostList/PostListLayout";
+import PostListView from "../components/PostList/PostListView";
+import usePostList from "../hooks/usePostList";
+
+function PostListPage() {
+  const { posts, sentinelRef, keyword, setKeyword, isLoading } = usePostList();
+
+  return (
+    <>
+      <MainHeader />
+      <PostListLayout onWrite={() => (window.location.href = "/postCreate")} />
+      <PostListView
+        posts={posts}
+        keyword={keyword}
+        setKeyword={setKeyword}
+        sentinelRef={sentinelRef}
+        isLoading={isLoading}
+      />
+    </>
+  );
+}
+
+export default PostListPage;
