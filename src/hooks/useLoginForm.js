@@ -60,12 +60,13 @@ export default function useLoginForm() {
 
       // 저장
       localStorage.setItem("access_token", json.data.accessToken);
+      console.log(json.data.accessToken);
       const user = json.data.user;
       localStorage.setItem("userId", user.id);
       localStorage.setItem("nickname", user.nickname);
       localStorage.setItem("profileImage", user.profileImage);
 
-      navigate("/postlist"); // ⭐ React Router 이동
+      navigate("/postlist");
     } catch (error) {
       //   console.error(error);
       const msg = error.message;
