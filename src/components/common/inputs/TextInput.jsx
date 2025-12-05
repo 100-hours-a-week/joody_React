@@ -14,9 +14,10 @@ const TextInput = React.memo(function TextInput({
   className,
 }) {
   return (
-    <div className={className}>
+    <>
       {label && <Label>{label}</Label>}
       <Input
+        className={className}
         id={id}
         name={name}
         type={type}
@@ -27,7 +28,7 @@ const TextInput = React.memo(function TextInput({
         onBlur={onBlur}
         onKeyDown={onKeyDown}
       />
-    </div>
+    </>
   );
 });
 
