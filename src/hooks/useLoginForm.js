@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { loginRequest } from "../api/auth";
 import {
   validateEmailValue,
@@ -12,6 +13,8 @@ export default function useLoginForm() {
   const [password, setPassword] = useState("");
   const [helper, setHelper] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   // 입력 핸들러
   // 자식에게 내려가므로 useCallback 필요
@@ -38,7 +41,7 @@ export default function useLoginForm() {
   );
 
   // 로그인
-  const handleLogin = useCallback(async () => {
+  const handleLogin = async () => {
     if (!isActive) return;
 
     setIsLoading(true);
@@ -62,7 +65,7 @@ export default function useLoginForm() {
       localStorage.setItem("nickname", user.nickname);
       localStorage.setItem("profileImage", user.profileImage);
 
-      window.location.href = "/postList.html";
+      navigate("/postlist"); // ⭐ React Router 이동
     } catch (error) {
       //   console.error(error);
       const msg = error.message;
@@ -79,7 +82,7 @@ export default function useLoginForm() {
     } finally {
       setIsLoading(false);
     }
-  }, [email, password, isActive]);
+  };
 
   // 스페이스 방지
   const onSpacePrevent = (e) => {
