@@ -11,7 +11,7 @@ import {
   ProfileImg,
   DropdownMenu,
   DropdownItem,
-} from "../../../styles/header/postHeader.style";
+} from "../../../styles/header/mainHeader.style";
 
 function MainHeader() {
   const [open, setOpen] = useState(false);
@@ -29,7 +29,7 @@ function MainHeader() {
     async function loadProfile() {
       try {
         const res = await fetchUserProfile(userId);
-        const imgUrl = res.data.data.profileImage;
+        const imgUrl = res.data.profileImage;
 
         const finalUrl = imgUrl
           ? imgUrl.startsWith("http")
@@ -45,6 +45,21 @@ function MainHeader() {
     }
 
     loadProfile();
+  }, []);
+
+  useEffect(() => {
+    function updateProfileImg() {
+      const saved = localStorage.getItem("profileImage");
+      if (saved) setProfileImg(saved);
+    }
+
+    updateProfileImg(); // 초기 로드
+
+    window.addEventListener("profileImageUpdated", updateProfileImg);
+
+    return () => {
+      window.removeEventListener("profileImageUpdated", updateProfileImg);
+    };
   }, []);
 
   // 로그아웃 처리
