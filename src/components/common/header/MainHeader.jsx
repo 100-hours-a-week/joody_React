@@ -91,10 +91,10 @@ function MainHeader() {
         />
 
         <DropdownMenu open={open}>
-          <DropdownItem onClick={() => navigate("/profileEdit")}>
+          <DropdownItem onClick={() => navigate("/profile/edit")}>
             회원정보수정
           </DropdownItem>
-          <DropdownItem onClick={() => navigate("/passwordEdit")}>
+          <DropdownItem onClick={() => navigate("/password/edit")}>
             비밀번호수정
           </DropdownItem>
           <DropdownItem onClick={handleLogout}>로그아웃</DropdownItem>
