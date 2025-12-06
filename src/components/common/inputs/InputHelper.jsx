@@ -1,7 +1,11 @@
 import styled from "styled-components";
 
-function InputHelper({ message }) {
-  return <Helper $visible={!!message}>{message}</Helper>;
+function InputHelper({ message, className }) {
+  return (
+    <Helper className={className} $visible={!!message}>
+      {message}
+    </Helper>
+  );
 }
 
 export default InputHelper;
