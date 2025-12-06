@@ -25,7 +25,6 @@ export const Label = styled.p`
 
 export const Input = styled.input`
   width: 100%;
-  max-width: 355px;
   height: 40px;
   border: none;
   border-bottom: 1px solid #ddd;
