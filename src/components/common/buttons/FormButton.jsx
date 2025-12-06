@@ -1,4 +1,3 @@
-// src/components/common/buttons/FormButton.jsx
 import styled from "styled-components";
 
 function FormButton({ disabled, onClick, children }) {
