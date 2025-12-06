@@ -9,7 +9,7 @@ function PostListPage() {
   return (
     <>
       <MainHeader />
-      <PostListLayout onWrite={() => (window.location.href = "/postCreate")} />
+      <PostListLayout onWrite={() => (window.location.href = "/post/write")} />
       <PostListView
         posts={posts}
         keyword={keyword}
