@@ -7,7 +7,10 @@ export async function apiRequest(url, options = {}) {
       method: options.method || "GET",
       data: options.body || null,
       params: options.params || null,
-      headers: options.headers,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
     });
 
     return {
