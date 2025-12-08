@@ -6,6 +6,10 @@ import SignupStep1Page from "./pages/SignupStep1Page";
 import SignupStep2Page from "./pages/SignupStep2Page";
 import PostListPage from "./pages/PostListPage";
 import ProfileEditPage from "./pages/ProfileEditPage";
+import PasswordEditPage from "./pages/PasswordEditPage";
+import PostWritePage from "./pages/PostWritePage";
+import PostEditPage from "./pages/PostEditPage";
+import PostDetailPage from "./pages/PostDetailPage";
 
 function App() {
   return (
@@ -25,7 +29,12 @@ function App() {
         <Route path="/signup/step2" element={<SignupStep2Page />} />
 
         <Route path="/postlist" element={<PostListPage />} />
-        <Route path="/profileEdit" element={<ProfileEditPage />} />
+        <Route path="/profile/edit" element={<ProfileEditPage />} />
+        <Route path="/password/edit" element={<PasswordEditPage />} />
+
+        <Route path="/post/write" element={<PostWritePage />} />
+        <Route path="/post/edit/:postId" element={<PostEditPage />} />
+        <Route path="/post/:postId" element={<PostDetailPage />} />
       </Routes>
     </BrowserRouter>
   );
