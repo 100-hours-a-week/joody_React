@@ -74,7 +74,15 @@ function MainHeader() {
     <PostHeaderWrapper>
       {/* 🔙 뒤로가기 버튼 (PostList 페이지에서는 숨김) */}
       {!isPostListPage && (
-        <BackLink onClick={() => navigate(-1)}>
+        <BackLink
+          onClick={() => {
+            if (location.pathname.startsWith("/post/")) {
+              navigate("/postlist"); // 수정 페이지라면 바로 postlist 이동
+            } else {
+              navigate(-1); // 그 외는 원래 뒤로가기
+            }
+          }}
+        >
           <BackIcon src="/img/back.png" alt="뒤로가기" />
         </BackLink>
       )}
