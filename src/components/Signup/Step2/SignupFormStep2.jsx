@@ -1,5 +1,9 @@
 import AvatarUpload from "./AvatarUpload";
+<<<<<<< HEAD
 import NicknameInput from "./NicknameInput";
+=======
+import TextInput from "../../common/inputs/TextInput";
+>>>>>>> feature/dev1
 import ConfirmButton from "./ConfirmButton";
 import { SignupTitle } from "../../../styles/signup/signupLayout";
 import useSignupStep2 from "../../../hooks/useSignupStep2";
@@ -8,9 +12,16 @@ function SignupFormStep2() {
   const {
     avatarPreview,
     nickname,
+<<<<<<< HEAD
     helperAvatar,
     helperNickname,
     onAvatarChange,
+=======
+    helperNickname,
+    helperAvatar,
+    onAvatarChange,
+    onNicknameBlur,
+>>>>>>> feature/dev1
     onNicknameChange,
     handleSubmit,
     isConfirmActive,
@@ -29,10 +40,18 @@ function SignupFormStep2() {
         helper={helperAvatar}
       />
 
+<<<<<<< HEAD
       <NicknameInput
         nickname={nickname}
         onChange={onNicknameChange}
         helper={helperNickname}
+=======
+      <TextInput
+        {...nickname.bind}
+        helper={helperNickname || nickname.error}
+        onChange={onNicknameChange}
+        onBlur={onNicknameBlur}
+>>>>>>> feature/dev1
       />
 
       <ConfirmButton

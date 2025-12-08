@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { signupRequest } from "../api/user";
+import { NICKNAME_REGEX, validateNickname } from "../../utils/InputValidators";
 
 export default function useSignupStep2() {
   const [nickname, setNickname] = useState("");
@@ -11,22 +12,37 @@ export default function useSignupStep2() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const nicknameRegex = /^[^\s]{1,8}$/;
-
-  const onNicknameChange = useCallback((e) => {
+  const onNicknameBlur = (e) => {
     const v = e.target.value.replace(/\s+/g, "");
+    setNickname(v);
+    const msg = validateNickname(v);
+    setHelperNickname(msg);
+  };
+
+  const onNicknameChange = (e) => {
+    const inputValue = e.target.value;
+
+    // 공백 포함 여부 체크
+    if (/\s/.test(inputValue)) {
+      setHelperNickname("* 닉네임에는 공백을 포함할 수 없습니다.");
+      return;
+    }
+
+    // 공백 제거 & 길이 제한
+    const v = inputValue.replace(/\s+/g, "");
     if (v.length > 8) return;
 
     setNickname(v);
 
-    if (!nicknameRegex.test(v)) {
+    // 입력 중 검증
+    if (!NICKNAME_REGEX.test(v)) {
       setHelperNickname("* 닉네임은 공백 없이 1~8자까지 입력 가능합니다.");
     } else {
       setHelperNickname("");
     }
-  }, []);
+  };
 
-  const onAvatarChange = useCallback((e) => {
+  const onAvatarChange = (e) => {
     const file = e.target.files[0];
     if (!file) {
       setAvatar(null);
@@ -48,9 +64,9 @@ export default function useSignupStep2() {
     };
 
     reader.readAsDataURL(file);
-  }, []);
+  };
 
-  const isConfirmActive = nicknameRegex.test(nickname) && !!avatar;
+  const isConfirmActive = NICKNAME_REGEX.test(nickname) && !!avatar;
 
   const handleSubmit = useCallback(async () => {
     if (!isConfirmActive) return;
@@ -94,6 +110,7 @@ export default function useSignupStep2() {
     helperAvatar,
     helperNickname,
     isLoading,
+    onNicknameBlur,
     onNicknameChange,
     onAvatarChange,
     handleSubmit,

@@ -1,5 +1,5 @@
-import EmailInput from "./EmailInput";
-import PasswordInput from "./PasswordInput";
+import TextInput from "../common/inputs/TextInput";
+import InputHelper from "../common/inputs/InputHelper";
 import LoginButton from "./LoginButton";
 import useLoginForm from "../../hooks/useLoginForm";
 import { Link } from "react-router-dom";
@@ -9,8 +9,6 @@ import {
   LoginFormBox,
   SignupLink,
 } from "../../styles/login/form.style";
-
-import InputHelper from "../common/inputs/InputHelper";
 
 function LoginForm() {
   const {
@@ -30,15 +28,21 @@ function LoginForm() {
   return (
     <LoginWrapper>
       <LoginFormBox onSubmit={(e) => e.preventDefault()}>
-        <EmailInput
+        <TextInput
+          label="이메일"
+          type="email"
           value={email}
+          placeholder="이메일을 입력하세요."
           onChange={onEmailChange}
           onBlur={onEmailBlur}
           onKeyDown={onSpacePrevent}
         />
 
-        <PasswordInput
+        <TextInput
+          label="비밀번호"
+          type="password"
           value={password}
+          placeholder="비밀번호를 입력하세요."
           onChange={onPasswordChange}
           onBlur={onPasswordBlur}
           onKeyDown={onSpacePrevent}
