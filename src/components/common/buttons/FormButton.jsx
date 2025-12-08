@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+// src/components/common/buttons/FormButton.jsx
+=======
+>>>>>>> feature/dev1
 import styled from "styled-components";
 
 function FormButton({ disabled, onClick, children }) {

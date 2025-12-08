@@ -39,7 +39,6 @@ function SignupFormStep2() {
         value={nickname}
         onChange={onNicknameChange}
         onBlur={onNicknameBlur}
-        helper={helperNickname}
       />
       <InputHelper message={helperNickname} />
 

@@ -1,6 +1,9 @@
 import axiosInstance from "./axiosInstance";
 
+<<<<<<< HEAD
+=======
 // 회원가입
+>>>>>>> feature/dev1
 export async function signupRequest(formData) {
   try {
     const response = await axiosInstance.post("/users/signup", formData, {
@@ -11,6 +14,8 @@ export async function signupRequest(formData) {
     throw error.response?.data || error;
   }
 }
+<<<<<<< HEAD
+=======
 
 // 프로필 유저 조회
 export async function fetchUserProfile(userId) {
@@ -43,3 +48,4 @@ export async function deleteUser(userId) {
     throw error.response?.data || error;
   }
 }
+>>>>>>> feature/dev1
