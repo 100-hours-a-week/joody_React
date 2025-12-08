@@ -2,13 +2,20 @@ import axiosInstance from "./axiosInstance";
 
 export async function apiRequest(url, options = {}) {
   try {
+    const isFormData = options.body instanceof FormData;
+    const defaultHeaders = isFormData
+      ? {}
+      : {
+          "Content-Type": "application/json",
+        };
+
     const response = await axiosInstance({
       url,
       method: options.method || "GET",
       data: options.body || null,
       params: options.params || null,
       headers: {
-        "Content-Type": "application/json",
+        ...defaultHeaders,
         ...options.headers,
       },
     });
