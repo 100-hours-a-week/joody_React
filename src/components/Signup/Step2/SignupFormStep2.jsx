@@ -1,5 +1,5 @@
 import AvatarUpload from "./AvatarUpload";
-import NicknameInput from "./NicknameInput";
+import TextInput from "../../common/inputs/TextInput";
 import ConfirmButton from "./ConfirmButton";
 import { SignupTitle } from "../../../styles/signup/signupLayout";
 import useSignupStep2 from "../../../hooks/useSignupStep2";
@@ -30,7 +30,7 @@ function SignupFormStep2() {
         helper={helperAvatar}
       />
 
-      <NicknameInput
+      <TextInput
         {...nickname.bind}
         helper={helperNickname || nickname.error}
         onChange={onNicknameChange}

@@ -23,7 +23,7 @@ export const PostInputLabel = styled.label`
   color: #222;
 `;
 
-export const PostContentInput = styled.textarea`
+export const StyledPostContentInput = styled.textarea`
   && {
     border: none;
     border-bottom: 1.5px solid #d9d9d9;
@@ -42,7 +42,7 @@ export const PostContentInput = styled.textarea`
     border-color: #4baa7d;
   }
 `;
-export const PostImageInput = styled.input`
+export const StyledPostImageInput = styled.input`
   font-size: 14px;
   color: #555;
 `;

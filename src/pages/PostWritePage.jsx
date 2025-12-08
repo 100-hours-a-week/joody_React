@@ -1,11 +1,11 @@
-import PostWriteForm from "../components/PostWrite/PostWriteForm";
 import MainHeader from "../components/common/header/MainHeader";
+import PostForm from "../components/common/form/PostForm";
 
 function PostWritePage() {
   return (
     <>
       <MainHeader />
-      <PostWriteForm />
+      <PostForm />
     </>
   );
 }
