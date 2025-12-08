@@ -1,6 +1,7 @@
 import AvatarUpload from "./AvatarUpload";
 import TextInput from "../../common/inputs/TextInput";
 import ConfirmButton from "./ConfirmButton";
+import InputHelper from "../../common/inputs/InputHelper";
 import { SignupTitle } from "../../../styles/signup/signupLayout";
 import useSignupStep2 from "../../../hooks/useSignupStep2";
 
@@ -31,11 +32,16 @@ function SignupFormStep2() {
       />
 
       <TextInput
-        {...nickname.bind}
-        helper={helperNickname || nickname.error}
+        label="닉네임"
+        id="nickname"
+        name="nickname"
+        placeholder="닉네임을 입력해주세요."
+        value={nickname}
         onChange={onNicknameChange}
         onBlur={onNicknameBlur}
+        helper={helperNickname}
       />
+      <InputHelper message={helperNickname} />
 
       <ConfirmButton
         disabled={!isConfirmActive || isLoading}
