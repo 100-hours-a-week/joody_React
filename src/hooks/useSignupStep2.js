@@ -98,6 +98,10 @@ export default function useSignupStep2() {
       window.location.href = "/login";
     } catch (err) {
       console.error("회원가입 오류:", err);
+      if (err.message === "duplicate_email") {
+        setHelperNickname("* 중복된 이메일입니다.");
+        return;
+      }
       alert("서버 오류 발생");
     } finally {
       setIsLoading(false);
