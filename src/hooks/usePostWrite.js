@@ -11,7 +11,6 @@ export function usePostWrite() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [previewURL, setPreviewURL] = useState("");
-  //   const [submitActive, setSubmitActive] = useState(false);
   const [helper, setHelper] = useState("");
 
   // 디바운스된 값 얻기
@@ -77,6 +76,9 @@ export function usePostWrite() {
       const result = await apiRequest(`/posts/${userId}`, {
         method: "POST",
         body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       if (!result.ok) {
