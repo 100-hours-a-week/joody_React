@@ -12,9 +12,9 @@ export const PostContainer = styled.div`
 
 /* 제목 */
 export const PostTitle = styled.p`
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
-  margin: 0 auto 16px;
+  margin: 10px 10px 0 16px;
   font-family: "Pretendard";
   width: 480px;
   max-width: 100%;
@@ -29,7 +29,7 @@ export const PostInfo = styled.div`
   gap: 10px;
   width: 480px;
   max-width: 100%;
-  margin: 0 auto 16px;
+  margin: 10px auto 16px;
   padding: 10px 0;
   border-bottom: 1px solid #d9d9d9;
 `;
@@ -45,7 +45,7 @@ export const AuthorImage = styled.img`
 
 export const AuthorName = styled.p`
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #222;
 `;
@@ -78,9 +78,15 @@ export const DeleteButton = styled.button`
 
 /* 게시글 내용 */
 export const PostContentBox = styled.div`
-  margin: 20px auto 0;
-  width: 544px;
+  margin: 20px 10px 50px 10px;
+  line-height: 1.4;
+  color: #333;
+  font-size: 13px;
+
+  /* 이미지와 동일한 폭으로 맞추기 */
+
   max-width: 100%;
+  box-sizing: border-box;
 `;
 
 export const PostImage = styled.img`
@@ -96,10 +102,15 @@ export const PostImage = styled.img`
 /* 통계 영역 */
 export const PostStats = styled.div`
   display: flex;
+  justify-content: flex-start;
   align-items: center;
   gap: 22px;
+  margin-top: 24px;
   width: 480px;
-  margin: 24px auto 0;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 10px;
 `;
 
 export const StatItem = styled.div`
@@ -109,7 +120,7 @@ export const StatItem = styled.div`
 `;
 
 export const StatNumber = styled.span`
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
 `;
 
@@ -211,7 +222,7 @@ export const CommentInfo = styled.div`
 
 export const CommentAuthor = styled.p`
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   color: #222;
   margin: 0;
 `;
