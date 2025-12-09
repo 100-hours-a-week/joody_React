@@ -1,9 +1,10 @@
+import React from "react";
 import CommentItem from "./CommentItem";
 import { StyledCommentList } from "../../styles/postDetail/postDetail.style";
 import { formatDate } from "../../../utils/format";
 import { canEditComment } from "../../../utils/permissions";
 
-export default function CommentList({ comments, onEdit, onDelete }) {
+function CommentList({ comments, onEdit, onDelete }) {
   return (
     <StyledCommentList>
       {comments.map((c) => {
@@ -39,3 +40,5 @@ export default function CommentList({ comments, onEdit, onDelete }) {
     </StyledCommentList>
   );
 }
+
+export default React.memo(CommentList);
