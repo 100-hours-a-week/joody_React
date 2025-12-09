@@ -7,7 +7,7 @@ export const PostContainer = styled.div`
   margin: auto;
   background-color: #ffffff;
   padding: 30px 0;
-  border-bottom: 1px solid #4baa7d;
+  /* border-bottom: 1px solid #4baa7d; */
 `;
 
 /* 제목 */
@@ -78,7 +78,7 @@ export const DeleteButton = styled.button`
 
 /* 게시글 내용 */
 export const PostContentBox = styled.div`
-  margin: 20px 10px 50px 10px;
+  margin: 20px 10px 80px 10px;
   line-height: 1.4;
   color: #333;
   font-size: 13px;
@@ -126,7 +126,7 @@ export const StatNumber = styled.span`
 
 /* 댓글 전체 영역 */
 export const CommentContainer = styled.div`
-  width: 470px;
+  width: 450px;
   margin: 20px auto;
 `;
 
@@ -141,18 +141,28 @@ export const CommentWriteBox = styled.div`
 export const CommentInput = styled.textarea`
   width: 100%;
   height: 80px;
-  border: none; /* 테두리 제거 */
-  outline: none; /* 포커스 시 아웃라인 제거 */
-  background-color: #fff; /* 배경 */
-  padding: 12px; /* 상하좌우 패딩 통합 */
+  border: 1.5px solid #d9d9d9;
+  border-radius: 10px;
+  outline: none;
+  background-color: #fff;
+  padding: 20px;
   font-size: 13px;
   font-family: "Noto Sans KR", sans-serif;
   resize: none;
   box-sizing: border-box;
-  border-bottom: 1px solid #4baa7d;
+  transition: border-color 0.2s; /* 부드러운 전환 */
 
   &::placeholder {
     color: #999;
+  }
+
+  &:hover {
+    border-color: #8cc8aa;
+  }
+
+  &:focus {
+    border-color: #4baa7d;
+    /* box-shadow: 0 0 0 2px rgba(75, 170, 125, 0.7); */
   }
 `;
 
@@ -180,14 +190,18 @@ export const StyledCommentList = styled.div`
   /* padding: 16px 20px; */
   width: 450px;
   margin: 0 auto;
+  padding: 10px;
   box-sizing: border-box;
 `;
 
 export const StyledCommentItem = styled.div`
+  background-color: #f9fafb;
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding-top: 12px;
+  padding: 20px;
+  margin-bottom: 12px;
+  border-radius: 20px;
 
   &:last-child {
     border-bottom: none;
@@ -201,6 +215,7 @@ export const CommentAuthorImage = styled.img`
   background-color: #d9d9d9;
   object-fit: cover;
   flex-shrink: 0;
+  margin-top: 6px;
 `;
 
 export const CommentBody = styled.div`
@@ -240,25 +255,35 @@ export const CommentButtons = styled.div`
 `;
 
 export const EditCommentButton = styled.button`
-  background-color: #fff;
-  border: 1px solid #4baa7d;
+  background-color: #f9fafb;
+  border: none;
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 4px 5px;
   font-size: 13px;
+  text-decoration: underline;
   cursor: pointer;
   color: #333;
-  transition: background 0.2s, color 0.2s;
+  transition: 0.2s, color 0.2s;
+
+  &:hover {
+    font-weight: bold;
+  }
 `;
 
 export const DeleteCommentButton = styled.button`
-  background-color: #fff;
-  border: 1px solid #4baa7d;
+  background-color: #f9fafb;
+  border: none;
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 4px 5px;
   font-size: 13px;
+  text-decoration: underline;
   cursor: pointer;
   color: #333;
-  transition: background 0.2s, color 0.2s;
+  transition: 0.2s, color 0.2s;
+
+  &:hover {
+    font-weight: bold;
+  }
 `;
 
 export const CommentContent = styled.p`
