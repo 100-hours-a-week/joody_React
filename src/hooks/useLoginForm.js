@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginRequest } from "../api/auth";
 import {
@@ -9,36 +9,43 @@ import {
 } from "../../utils/InputValidators";
 
 export default function useLoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
   const [helper, setHelper] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   // 입력 핸들러
-  // 자식에게 내려가므로 useCallback 필요
   const onEmailChange = useCallback((e) => {
     const v = e.target.value.replace(/\s+/g, "");
-    setEmail(v);
+    emailRef.current = v;
     setHelper(validateEmailValue(v));
   }, []);
 
   const onPasswordChange = useCallback((e) => {
     const v = e.target.value.replace(/\s+/g, "");
-    setPassword(v);
+    passwordRef.current = v;
     setHelper(validatePasswordValue(v));
   }, []);
 
   // blur 핸들러
-  const onEmailBlur = () => validateEmailValue(email);
-  const onPasswordBlur = () => validatePasswordValue(password);
-
-  // 의존하는 값에 따라 결정되는 값 => useMemo
-  const isActive = useMemo(
-    () => EMAIL_REGEX.test(email) && PASSWORD_REGEX.test(password),
-    [email, password]
+  const onEmailBlur = useCallback(
+    () => validateEmailValue(emailRef.current),
+    []
   );
+  const onPasswordBlur = useCallback(
+    () => validatePasswordValue(passwordRef.current),
+    []
+  );
+
+  // 버튼 활성화 조건 -> useMemo
+  const isActive = useMemo(() => {
+    return (
+      EMAIL_REGEX.test(emailRef.current) &&
+      PASSWORD_REGEX.test(passwordRef.current)
+    );
+  }, [helper]); // helper만 바뀔 때 재연산
 
   // 로그인
   const handleLogin = async () => {
@@ -48,19 +55,17 @@ export default function useLoginForm() {
     setHelper("");
 
     try {
-      const json = await loginRequest(email.trim(), password.trim());
+      const json = await loginRequest(
+        emailRef.current.trim(),
+        passwordRef.current.trim()
+      );
 
-      console.log(json);
-
-      // 로그인 실패
       if (json?.message === "invalid_credentials") {
         setHelper("* 아이디 또는 비밀번호를 확인해주세요.");
         return;
       }
 
-      // 저장
       localStorage.setItem("access_token", json.data.accessToken);
-      console.log(json.data.accessToken);
       const user = json.data.user;
       localStorage.setItem("userId", user.id);
       localStorage.setItem("nickname", user.nickname);
@@ -68,10 +73,7 @@ export default function useLoginForm() {
 
       navigate("/postlist");
     } catch (error) {
-      //   console.error(error);
       const msg = error.message;
-
-      console.log(msg);
 
       if (msg === "invalid_credentials") {
         setHelper("이메일 또는 비밀번호가 일치하지 않습니다.");
@@ -94,8 +96,6 @@ export default function useLoginForm() {
   };
 
   return {
-    email,
-    password,
     helper,
     isLoading,
     isActive,
@@ -105,5 +105,7 @@ export default function useLoginForm() {
     onPasswordBlur,
     onSpacePrevent,
     handleLogin,
+    emailRef,
+    passwordRef,
   };
 }

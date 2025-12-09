@@ -12,8 +12,6 @@ import {
 
 function LoginForm() {
   const {
-    email,
-    password,
     helper,
     isActive,
     isLoading,
@@ -23,15 +21,16 @@ function LoginForm() {
     onPasswordBlur,
     onSpacePrevent,
     handleLogin,
+    emailRef,
+    passwordRef,
   } = useLoginForm();
-
   return (
     <LoginWrapper>
       <LoginFormBox onSubmit={(e) => e.preventDefault()}>
         <TextInput
           label="이메일"
           type="email"
-          value={email}
+          defaultValue={emailRef.current}
           placeholder="이메일을 입력하세요."
           onChange={onEmailChange}
           onBlur={onEmailBlur}
@@ -41,7 +40,7 @@ function LoginForm() {
         <TextInput
           label="비밀번호"
           type="password"
-          value={password}
+          defaultValue={passwordRef.current}
           placeholder="비밀번호를 입력하세요."
           onChange={onPasswordChange}
           onBlur={onPasswordBlur}
