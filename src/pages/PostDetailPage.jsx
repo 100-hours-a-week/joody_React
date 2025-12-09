@@ -10,12 +10,15 @@ import CommentInput from "../components/PostDetail/CommentInput";
 import CommentList from "../components/PostDetail/CommentList";
 import DeletePostModal from "../components/PostDetail/DeletePostModal";
 import DeleteCommentModal from "../components/PostDetail/DeleteCommentModal";
+import Spinner from "../components/common/spinner/Spinner";
 
 import {
   PostContainer,
   CommentContainer,
   PostTitle,
 } from "../styles/postDetail/postDetail.style";
+
+import { formatImageUrl } from "../../utils/format";
 
 export default function PostDetailPage() {
   const navigate = useNavigate();
@@ -40,7 +43,7 @@ export default function PostDetailPage() {
     closeDeleteModals,
   } = usePostDetail(postId);
 
-  if (loading) return <div>로딩중...</div>;
+  if (loading) return <Spinner />;
   if (error) return <div>{error}</div>;
   if (!post) return null;
 
@@ -54,13 +57,7 @@ export default function PostDetailPage() {
         <PostTitle>{post.title}</PostTitle>
 
         <PostInfos
-          authorImg={
-            post.authorProfileImage
-              ? post.authorProfileImage.startsWith("http")
-                ? post.authorProfileImage
-                : `http://localhost:8080${post.authorProfileImage}`
-              : "/img/original_profile.png"
-          }
+          authorImg={formatImageUrl(post.authorProfileImage)}
           author={post.author}
           date={post.createdAt}
           editable={post.editable}
