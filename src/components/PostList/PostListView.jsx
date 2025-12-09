@@ -4,6 +4,7 @@ import {
   PostContainer,
   SearchBox,
 } from "../../styles/postlist/postlistLayout.style";
+import Spinner from "../common/spinner/Spinner";
 
 function PostListView({ posts, keyword, setKeyword, sentinelRef, isLoading }) {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ function PostListView({ posts, keyword, setKeyword, sentinelRef, isLoading }) {
 
       <div ref={sentinelRef} style={{ height: 1 }} />
 
-      {isLoading && <p>불러오는 중...</p>}
+      {isLoading && <Spinner />}
     </PostContainer>
   );
 }
