@@ -8,12 +8,17 @@ import styled from "styled-components";
 
 function SignupFormStep1() {
   const {
-    email,
-    password,
-    passwordCheck,
+    helperEmail,
+    helperPassword,
+    helperPasswordCheck,
+
     onEmailBlur,
     onPasswordBlur,
     onPasswordCheckBlur,
+    onEmailChange,
+    onPasswordChange,
+    onPasswordCheckChange,
+
     handleNext,
     isNextActive,
   } = useSignupStep1();
@@ -28,28 +33,28 @@ function SignupFormStep1() {
         label="이메일"
         type="email"
         placeholder="이메일을 입력하세요."
-        {...email.bind}
+        onChange={onEmailChange}
         onBlur={onEmailBlur}
       />
-      <InputHelper message={email.error} />
+      <InputHelper message={helperEmail} />
 
       <StyledInputPassword
         label="비밀번호"
         type="password"
         placeholder="비밀번호를 입력하세요."
-        {...password.bind}
+        onChange={onPasswordChange}
         onBlur={onPasswordBlur}
       />
-      <InputHelper message={password.error} />
+      <InputHelper message={helperPassword} />
 
       <StyledInputPassword
         label="비밀번호 확인"
         type="password"
         placeholder="비밀번호를 다시 입력하세요."
-        {...passwordCheck.bind}
+        onChange={onPasswordCheckChange}
         onBlur={onPasswordCheckBlur}
       />
-      <InputHelper message={passwordCheck.error} />
+      <InputHelper message={helperPasswordCheck} />
 
       <NextButton isActive={isNextActive} onClick={handleNext} />
     </>
