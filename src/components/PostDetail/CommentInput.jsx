@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import React from "react";
 import {
   CommentWriteBox,
@@ -26,6 +26,10 @@ const CommentInputBox = React.memo(function CommentInputBox({
     onSubmit(value, () => setValue("")); // reset callback
   };
 
+  const handleChange = useCallback((e) => {
+    setValue(e.target.value);
+  }, []);
+
   return (
     <CommentWriteBox>
       <CommentInput
@@ -33,7 +37,7 @@ const CommentInputBox = React.memo(function CommentInputBox({
         name="comment"
         placeholder="댓글을 남겨주세요!"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={handleChange}
       />
       <CommentSubmit type="button" onClick={handleSubmit} disabled={isDisabled}>
         {isEditing ? "댓글 수정" : "댓글 등록"}
