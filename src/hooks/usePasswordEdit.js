@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import { useToast } from "./useToast";
@@ -13,61 +13,63 @@ export function usePasswordEdit() {
   const { toast, showToast } = useToast();
   const userId = localStorage.getItem("userId");
 
-  const [state, setState] = useState({
-    password: "",
-    passwordCheck: "",
-    helperPassword: "",
-    helperPasswordCheck: "",
-    buttonActive: false,
-  });
+  // const [state, setState] = useState({
+  //   password: "",
+  //   passwordCheck: "",
+  //   helperPassword: "",
+  //   helperPasswordCheck: "",
+  //   buttonActive: false,
+  // });
+
+  const passwordRef = useRef("");
+  const passwordCheckRef = useRef("");
+
+  const [helperPassword, setHelperPassword] = useState("");
+  const [helperPasswordCheck, setHelperPasswordCheck] = useState("");
+  const [buttonActive, setButtonActive] = useState(false);
 
   // 비밀번호 입력
   function handlePasswordInput(e) {
     const v = e.target.value;
+    passwordRef.current = v;
+
     const pwdMsg = validatePasswordValue(v);
+    setHelperPassword(pwdMsg); // helper 텍스트 표시
 
-    setState((prev) => {
-      const checkMsg =
-        prev.passwordCheck === ""
-          ? "* 비밀번호 확인을 먼저 입력해주세요." // 비어있을 때 메시지 표시 or ""로 두고 disabled 조건만 설정해도 됨
-          : validatePasswordCheckValue(v, prev.passwordCheck);
+    // 확인칸 유효성 검사
+    const checkMsg =
+      passwordCheckRef.current === ""
+        ? "" // 빈 상태면 표시 안함
+        : validatePasswordCheckValue(v, passwordCheckRef.current);
 
-      const active =
-        pwdMsg === "" &&
-        validatePasswordCheckValue(v, prev.passwordCheck) === "" &&
-        prev.passwordCheck !== ""; // ⭐ 확인칸 비었으면 false
+    setHelperPasswordCheck(checkMsg);
 
-      return {
-        ...prev,
-        password: v,
-        helperPassword: pwdMsg,
-        helperPasswordCheck: prev.passwordCheck === "" ? "" : checkMsg,
-        buttonActive: active,
-      };
-    });
+    const active =
+      pwdMsg === "" && passwordCheckRef.current !== "" && checkMsg === "";
+
+    setButtonActive(active);
   }
 
   // 비밀번호 확인 입력
   function handlePasswordCheckInput(e) {
     const v = e.target.value;
-    const checkMsg = validatePasswordCheckValue(state.password, v);
-    const pwdMsg = validatePasswordValue(state.password);
+    passwordCheckRef.current = v;
 
-    setState((prev) => ({
-      ...prev,
-      passwordCheck: v,
-      helperPasswordCheck: checkMsg,
-      buttonActive: pwdMsg === "" && checkMsg === "" && v !== "", // 둘 다 검증 통과 + 비어있지 않음
-    }));
+    const checkMsg = validatePasswordCheckValue(passwordRef.current, v);
+    const pwdMsg = validatePasswordValue(passwordRef.current);
+
+    setHelperPasswordCheck(checkMsg);
+    setButtonActive(pwdMsg === "" && checkMsg === "" && v !== "");
   }
+
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!state.buttonActive) return;
+    if (!buttonActive) return;
 
     try {
       const res = await axiosInstance.put(`/users/${userId}/password`, {
-        newPassword: state.password,
-        newPassword_check: state.passwordCheck,
+        newPassword: passwordRef.current,
+        newPassword_check: passwordCheckRef.current,
       });
 
       if (res.data.message === "password_update_success") {
@@ -79,7 +81,6 @@ export function usePasswordEdit() {
       }
     } catch (err) {
       console.error(err);
-      //   console.log(err.response?.data?.message);
       if (err.response?.data?.message) {
         showToast("❌ 현재 비밀번호와 동일하게 설정할 수 없습니다.");
         return;
@@ -89,8 +90,14 @@ export function usePasswordEdit() {
   }
 
   return {
-    state,
+    state: {
+      helperPassword,
+      helperPasswordCheck,
+      buttonActive,
+    },
     toast,
+    passwordRef,
+    passwordCheckRef,
     handlers: {
       handlePasswordInput,
       handlePasswordCheckInput,
