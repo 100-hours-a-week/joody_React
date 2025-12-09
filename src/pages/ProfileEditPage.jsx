@@ -9,7 +9,15 @@ import {
 } from "../styles/profileEdit/profileEdit.style";
 
 function ProfileEditPage() {
-  const { state, toast, modalOpen, handlers } = useProfileEdit();
+  const {
+    state,
+    editEnabled,
+    nicknameRef,
+    helper,
+    toast,
+    modalOpen,
+    handlers,
+  } = useProfileEdit();
 
   return (
     <>
@@ -17,7 +25,15 @@ function ProfileEditPage() {
       <ProfileEditTitle>회원정보수정</ProfileEditTitle>
 
       <ProfileEditContainer>
-        <ProfileEditForm state={state} handlers={handlers} />
+        <ProfileEditForm
+          state={{
+            ...state,
+            editEnabled,
+            nicknameRef,
+            helper,
+          }}
+          handlers={handlers}
+        />
       </ProfileEditContainer>
 
       <DeleteModal
