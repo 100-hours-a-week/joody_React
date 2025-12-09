@@ -1,15 +1,5 @@
 import axios from "axios";
 
-<<<<<<< HEAD
-export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
-  withCredentials: true, // 쿠키 포함
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-=======
 let isRefreshing = false;
 let refreshSubscribers = [];
 
@@ -81,5 +71,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
->>>>>>> feature/dev1
 export default axiosInstance;
