@@ -30,13 +30,11 @@ function SignupFormStep2() {
         onChange={onAvatarChange}
         helper={helperAvatar}
       />
-
       <TextInput
         label="닉네임"
         id="nickname"
         name="nickname"
         placeholder="닉네임을 입력해주세요."
-        value={nickname}
         onChange={onNicknameChange}
         onBlur={onNicknameBlur}
       />
