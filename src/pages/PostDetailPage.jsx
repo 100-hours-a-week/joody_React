@@ -38,18 +38,18 @@ export default function PostDetailPage() {
   if (!post) return null;
 
   console.log(comments);
+  console.log(post);
 
-  const handlers = {
+  // ⭐ post 관련 UI 핸들러만 전달
+  const uiHandlers = {
     authorImg: formatImageUrl(post.authorProfileImage),
     onEdit: () => navigate(`/post/edit/${postId}`),
-    onDeletePost: openDeletePostModal,
-    onDeleteComment: openDeleteCommentModal,
     onToggleLike: handleLike,
     onCommentChange: handleCommentChange,
     onCommentSubmit: handleCommentSubmit,
     onEditComment: handleEditComment,
+    onDeleteComment: openDeleteCommentModal, // 모달만 여는 함수 전달
   };
-
   return (
     <>
       <MainHeader />
@@ -59,7 +59,8 @@ export default function PostDetailPage() {
         liked={liked}
         commentValue={commentValue}
         isEditing={isEditing}
-        handlers={handlers}
+        handlers={uiHandlers}
+        onDeletePost={openDeletePostModal} // 🔥 삭제 버튼 동작만 넘김
       />
 
       <DeletePostModal

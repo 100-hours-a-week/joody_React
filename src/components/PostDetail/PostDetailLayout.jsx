@@ -46,9 +46,6 @@ function PostDetailLayout({
 
       <CommentContainer>
         <CommentInputBox
-          // value={commentValue}
-          // onChange={handlers.onCommentChange}
-          // onSubmit={handlers.onCommentSubmit}
           onSubmit={handlers.onCommentSubmit}
           isEditing={isEditing}
           editingText={commentValue}
