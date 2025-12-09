@@ -18,6 +18,7 @@ function PostDetailLayout({
   commentValue,
   isEditing,
   handlers,
+  onDeletePost,
 }) {
   return (
     <>
@@ -30,7 +31,7 @@ function PostDetailLayout({
           date={post.createdAt}
           editable={post.editable}
           onEdit={handlers.onEdit}
-          onDelete={handlers.onDeletePost}
+          onDelete={onDeletePost}
         />
 
         <PostContent content={post.content} image={post.postImage} />
