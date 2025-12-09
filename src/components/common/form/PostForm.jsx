@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import TextInput from "../inputs/TextInput";
 import PostContentInput from "./PostContentInput";
@@ -15,16 +15,20 @@ import { createPostApi, updatePostApi } from "../../../api/post";
 import styled from "styled-components";
 
 function PostForm({
-  mode = "create", // create | edit
+  mode = "create",
   postId,
   initialTitle = "",
   initialContent = "",
   initialImage = "",
-  onSubmit, // 수정 시 PostEditPage에서 전달
+  onSubmit,
 }) {
-  // ⭐ Form State
-  const [title, setTitle] = useState(() => initialTitle);
-  const [content, setContent] = useState(() => initialContent);
+  const titleRef = useRef(initialTitle);
+  const contentRef = useRef(initialContent);
+
+  // ⭐ input DOM 제어용 ref
+  const titleInputRef = useRef(null);
+  const contentInputRef = useRef(null);
+
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState(() =>
     initialImage ? getFileName(initialImage) : ""
@@ -32,23 +36,62 @@ function PostForm({
 
   const [helper, setHelper] = useState("");
   const [submitActive, setSubmitActive] = useState(false);
+
   const navigate = useNavigate();
 
-  const isValid =
-    title.trim().length > 0 && content.trim().length > 0 && title.length <= 26;
+  const validate = useCallback(() => {
+    const isValid =
+      titleRef.current.trim().length > 0 &&
+      contentRef.current.trim().length > 0 &&
+      titleRef.current.length <= 26;
 
-  // 입력 유효성 검사
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
     setSubmitActive(isValid);
-    if (!isValid && title.length > 26) {
+
+    if (!isValid && titleRef.current.length > 26) {
       setHelper("* 제목은 최대 26자까지 가능합니다.");
     } else {
       setHelper("");
     }
-  }, [isValid, title]);
+  }, []);
 
-  // ⭐ initialImage 들어오면 state에 반영
+  // 🎯 edit 모드에서 input 값을 DOM에 주입
+  useEffect(() => {
+    if (mode === "edit") {
+      titleRef.current = initialTitle;
+      contentRef.current = initialContent;
+
+      if (titleInputRef.current) titleInputRef.current.value = initialTitle;
+      if (contentInputRef.current)
+        contentInputRef.current.value = initialContent;
+
+      validate();
+    }
+  }, [mode, initialTitle, initialContent, validate]);
+
+  const onTitleChange = useCallback(
+    (e) => {
+      titleRef.current = e.target.value;
+      validate();
+    },
+    [validate]
+  );
+
+  const onContentChange = useCallback(
+    (e) => {
+      contentRef.current = e.target.value;
+      validate();
+    },
+    [validate]
+  );
+
+  const handleImageSelect = useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImage(file);
+    setImageName(file.name);
+  }, []);
+
   useEffect(() => {
     if (mode === "edit" && initialImage) {
       setImage(initialImage);
@@ -56,35 +99,21 @@ function PostForm({
     }
   }, [initialImage, mode]);
 
-  const handleImageSelect = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImage(file);
-    setImageName(file.name);
-  };
-
-  // 📌 handleSubmit: create / edit 방식 분기
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isValid) {
+    if (!submitActive) {
       setHelper("* 제목과 내용을 모두 입력해주세요.");
       return;
     }
 
-    // FormData 준비
     const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    if (image instanceof File) formData.append("image", image); // 새로 업로드한 경우만
+    formData.append("title", titleRef.current);
+    formData.append("content", contentRef.current);
+    if (image instanceof File) formData.append("image", image);
 
-    // 외부에서 onSubmit을 넘기면 그대로 사용
     if (onSubmit) {
-      if (mode === "create") {
-        onSubmit(formData);
-      } else {
-        onSubmit(formData, postId);
-      }
+      mode === "create" ? onSubmit(formData) : onSubmit(formData, postId);
       return;
     }
 
@@ -97,26 +126,19 @@ function PostForm({
     try {
       if (mode === "create") {
         const { ok, data } = await createPostApi(userId, formData);
-        if (!ok) {
-          alert("게시글 작성에 실패했습니다.");
-          return;
-        }
+        if (!ok) return alert("게시글 작성 실패");
 
-        const createdId =
-          data?.post_id ?? data?.postId ?? data?.id ?? data?.postID;
+        const createdId = data?.post_id ?? data?.postId ?? data?.id;
         if (createdId) localStorage.setItem("CreatedPostId", createdId);
         navigate("/postlist");
       } else {
         const { ok } = await updatePostApi(postId, formData);
-        if (!ok) {
-          alert("게시글 수정에 실패했습니다.");
-          return;
-        }
+        if (!ok) return alert("게시글 수정 실패");
         navigate(`/post/${postId}`);
       }
     } catch (err) {
       console.error("게시글 저장 실패:", err);
-      alert("서버 오류가 발생했습니다.");
+      alert("서버 오류입니다.");
     }
   };
 
@@ -125,23 +147,22 @@ function PostForm({
       <FormGroup>
         <StyledTextInput
           label="제목*"
-          id="post_title_input"
           type="text"
-          name="title"
+          defaultValue={initialTitle}
+          ref={titleInputRef} // ⭐ DOM 직접 참조
           placeholder="제목을 입력해주세요.(최대 26글자)"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={onTitleChange}
         />
       </FormGroup>
 
       <PostContentInput
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
+        defaultValue={initialContent}
+        ref={contentInputRef} // ⭐ DOM 직접 참조
+        onChange={onContentChange}
       />
 
       <StyledInputHelper message={helper} $visible={!!helper} />
 
-      {/* 이미지 업로드 */}
       <PostImageInput onSelect={handleImageSelect} fileName={imageName} />
 
       <FormButton type="submit" disabled={!submitActive}>
@@ -153,6 +174,7 @@ function PostForm({
 
 export default PostForm;
 
+// === 스타일 ===
 const StyledTextInput = styled(TextInput)`
   && input[type="text"] {
     border: none;

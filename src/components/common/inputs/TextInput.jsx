@@ -1,27 +1,31 @@
 import { Label, Input } from "../../../styles/login/form.style";
-import React from "react";
+import React, { forwardRef } from "react";
 
-const TextInput = React.memo(function TextInput({
-  label,
-  id,
-  name,
-  value,
-  type = "text",
-  placeholder,
-  onChange,
-  onBlur,
-  onKeyDown,
-  className,
-}) {
+const TextInput = forwardRef(function TextInput(
+  {
+    label,
+    id,
+    name,
+    defaultValue,
+    type = "text",
+    placeholder,
+    onChange,
+    onBlur,
+    onKeyDown,
+    className,
+  },
+  ref
+) {
   return (
     <>
       {label && <Label>{label}</Label>}
       <Input
+        ref={ref}
         className={className}
         id={id}
         name={name}
         type={type}
-        value={value}
+        defaultValue={defaultValue} // uncontrolled
         placeholder={placeholder}
         autoComplete="off"
         onChange={onChange}
@@ -32,4 +36,4 @@ const TextInput = React.memo(function TextInput({
   );
 });
 
-export default TextInput;
+export default React.memo(TextInput);
