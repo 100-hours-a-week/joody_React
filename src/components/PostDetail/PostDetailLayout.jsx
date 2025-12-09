@@ -1,3 +1,4 @@
+import React from "react";
 import {
   PostContainer,
   CommentContainer,
@@ -10,7 +11,7 @@ import PostStatsComponent from "./PostStats";
 import CommentInputBox from "./CommentInput";
 import CommentList from "./CommentList";
 
-export default function PostDetailLayout({
+function PostDetailLayout({
   post,
   comments,
   liked,
@@ -45,10 +46,12 @@ export default function PostDetailLayout({
 
       <CommentContainer>
         <CommentInputBox
-          value={commentValue}
-          onChange={handlers.onCommentChange}
+          // value={commentValue}
+          // onChange={handlers.onCommentChange}
+          // onSubmit={handlers.onCommentSubmit}
           onSubmit={handlers.onCommentSubmit}
           isEditing={isEditing}
+          editingText={commentValue}
         />
         <CommentList
           comments={comments}
@@ -59,3 +62,5 @@ export default function PostDetailLayout({
     </>
   );
 }
+
+export default React.memo(PostDetailLayout);

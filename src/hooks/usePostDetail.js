@@ -13,7 +13,7 @@ export function usePostDetail(postId) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
-  const [commentValue, setCommentValue] = useState("");
+  // const [commentValue, setCommentValue] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
@@ -131,13 +131,13 @@ export function usePostDetail(postId) {
   // ==========================
   // 댓글 입력 상태
   // ==========================
-  const handleCommentChange = (value) => setCommentValue(value);
+  // const handleCommentChange = (value) => setCommentValue(value);
 
   // ==========================
   // 댓글 작성 & 수정
   // ==========================
-  const handleCommentSubmit = async () => {
-    const text = commentValue.trim();
+  const handleCommentSubmit = async (text, reset) => {
+    // const text = commentValue.trim();
     const userId = localStorage.getItem("userId");
     if (!text || !userId) return;
 
@@ -154,7 +154,10 @@ export function usePostDetail(postId) {
         )
       );
 
-      resetCommentState();
+      // resetCommentState();
+      reset(); // CommentInput 내부 state 초기화
+      setIsEditing(false);
+      setEditingId(null);
       return;
     }
 
@@ -177,11 +180,14 @@ export function usePostDetail(postId) {
       ...prev,
       commentCount: prev.commentCount + 1,
     }));
-    resetCommentState();
+    // resetCommentState();
+    reset(); // 🔥 입력창 초기화
+    setIsEditing(false);
+    setEditingId(null);
   };
 
   const resetCommentState = () => {
-    setCommentValue("");
+    // setCommentValue("");
     setIsEditing(false);
     setEditingId(null);
   };
@@ -281,13 +287,13 @@ export function usePostDetail(postId) {
     post,
     comments,
     liked,
-    commentValue,
+    // commentValue,
     isEditing,
     editingId,
     modals,
     loading,
     error,
-    handleCommentChange,
+    // handleCommentChange,
     handleCommentSubmit,
     handleLike,
     handleEditComment,
