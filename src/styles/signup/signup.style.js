@@ -38,7 +38,8 @@ export const Input = styled.input`
 
 export const NextButtonStyled = styled.button`
   width: 100%;
-  height: 48px;
+  max-width: 390px; /* 버튼 최대 크기 */
+  min-width: 280px; /* 너무 좁아지지 않도록 */
 
   border: none;
   border-radius: 8px;
@@ -52,4 +53,12 @@ export const NextButtonStyled = styled.button`
   cursor: ${(props) => (props.$active ? "pointer" : "not-allowed")};
 
   transition: all 0.2s;
+
+  ${({ theme }) => theme.media.tablet`
+    margin-top: 24px;
+  `}
+
+  ${({ theme }) => theme.media.mobile`
+    margin-top: 20px;
+  `}
 `;

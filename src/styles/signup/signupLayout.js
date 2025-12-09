@@ -8,13 +8,30 @@ export const SignupLayoutWrapper = styled.main`
   justify-content: center;
   align-items: flex-start;
 
-  padding-top: 150px;
+  padding-top: 120px;
   background-color: #fff;
   color: #121212;
   font-family: "Pretendard", sans-serif;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
+
+  ${({ theme }) =>
+    theme.media.laptop(`
+    padding-top: 100px;
+  `)}
+
+  ${({ theme }) =>
+    theme.media.tablet(`
+    padding-top: 50px;
+    overflow-y: hidden;
+  `)}
+
+  ${({ theme }) =>
+    theme.media.mobile(`
+    padding-top: 60px;
+    overflow-y: hidden;
+  `)}
 `;
 
 export const SignupContainer = styled.div`
@@ -24,10 +41,8 @@ export const SignupContainer = styled.div`
 
   display: flex;
   flex-direction: column;
-
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  justify-content: space-between;
+  height: 100%;
 `;
 
 export const SignupTitle = styled.h2`
@@ -36,4 +51,15 @@ export const SignupTitle = styled.h2`
   line-height: 1.4;
   margin-bottom: 48px;
   text-align: left;
+
+  ${({ theme }) =>
+    theme.media.tablet(`
+    margin-bottom: 25px;
+  `)}
+
+  ${({ theme }) =>
+    theme.media.mobile(`
+    padding-top: 60px;
+    overflow-y: hidden;
+  `)}
 `;
