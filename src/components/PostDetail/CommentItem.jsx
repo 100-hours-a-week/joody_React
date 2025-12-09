@@ -1,3 +1,4 @@
+import React from "react";
 import {
   StyledCommentItem,
   CommentAuthorImage,
@@ -12,7 +13,7 @@ import {
   CommentContent,
 } from "../../styles/postDetail/postDetail.style";
 
-export default function CommentItem({
+function CommentItem({
   id,
   authorImg,
   nickname,
@@ -37,15 +38,12 @@ export default function CommentItem({
             <CommentButtons>
               <EditCommentButton
                 className="edit_comment_button"
-                onClick={() => onEdit(id)}
+                onClick={() => onEdit(id)} // 직접 arrow
               >
                 수정
               </EditCommentButton>
               <DeleteCommentButton
-                onClick={() => {
-                  console.log("🧨 delete clicked:", id);
-                  onDelete(id);
-                }}
+                onClick={() => onDelete(id)} // 직접 arrow
               >
                 삭제
               </DeleteCommentButton>
@@ -58,3 +56,5 @@ export default function CommentItem({
     </StyledCommentItem>
   );
 }
+
+export default React.memo(CommentItem);
