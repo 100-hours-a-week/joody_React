@@ -31,10 +31,9 @@ export default function usePostList() {
       const content = Array.isArray(list.content) ? list.content : [];
 
       setPosts((prev) => {
-        const merged = [...prev, ...content];
-        return merged.filter(
-          (post, idx, arr) => idx === arr.findIndex((p) => p.id === post.id)
-        );
+        const seen = new Set(prev.map((p) => p.id));
+        const newPosts = content.filter((post) => !seen.has(post.id));
+        return [...prev, ...newPosts];
       });
 
       const next = list.nextCursor ?? null;

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useInput } from "./useInput";
+import { useState, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   validateEmailValue,
   validatePasswordValue,
@@ -9,45 +9,89 @@ import {
 } from "../../utils/InputValidators";
 
 export default function useSignupStep1() {
-  const email = useInput("", validateEmailValue);
-  const password = useInput("", validatePasswordValue);
-  const passwordCheck = useInput("", (v) =>
-    validatePasswordCheckValue(password.value, v)
-  );
+  const navigate = useNavigate();
+
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
+  const passwordCheckRef = useRef("");
 
   const [helperEmail, setHelperEmail] = useState("");
   const [helperPassword, setHelperPassword] = useState("");
   const [helperPasswordCheck, setHelperPasswordCheck] = useState("");
+  const [isNextActive, setIsNextActive] = useState(false);
 
-  const onEmailBlur = () => setHelperEmail(email.error || "");
-  const onPasswordBlur = () => setHelperPassword(password.error);
+  const validate = useCallback(() => {
+    const email = emailRef.current.trim();
+    const password = passwordRef.current.trim();
+    const passwordCheck = passwordCheckRef.current.trim();
 
-  const onPasswordCheckBlur = () => setHelperPasswordCheck(passwordCheck.error);
+    const valid =
+      EMAIL_REGEX.test(email) &&
+      PASSWORD_REGEX.test(password) &&
+      password === passwordCheck;
 
-  const isNextActive =
-    EMAIL_REGEX.test(email.value) &&
-    PASSWORD_REGEX.test(password.value) &&
-    password.value === passwordCheck.value;
+    setIsNextActive(valid);
+  }, []);
+
+  // 입력 이벤트
+  const onEmailChange = (e) => {
+    emailRef.current = e.target.value;
+    setHelperEmail(validateEmailValue(emailRef.current));
+    validate();
+  };
+
+  const onPasswordChange = (e) => {
+    passwordRef.current = e.target.value;
+    setHelperPassword(validatePasswordValue(passwordRef.current));
+    validate();
+  };
+
+  const onPasswordCheckChange = (e) => {
+    passwordCheckRef.current = e.target.value;
+    setHelperPasswordCheck(
+      validatePasswordCheckValue(passwordRef.current, passwordCheckRef.current)
+    );
+    validate();
+  };
+
+  const onEmailBlur = () => {
+    setHelperEmail(validateEmailValue(emailRef.current));
+  };
+
+  const onPasswordBlur = () => {
+    setHelperPassword(validatePasswordValue(passwordRef.current));
+  };
+
+  const onPasswordCheckBlur = () => {
+    setHelperPasswordCheck(
+      validatePasswordCheckValue(passwordRef.current, passwordCheckRef.current)
+    );
+  };
+
+  // next step
   const handleNext = () => {
     if (!isNextActive) return;
 
-    localStorage.setItem("signup_email", email.value.trim());
-    localStorage.setItem("signup_password", password.value.trim());
-    localStorage.setItem("signup_password_check", password.value.trim());
+    localStorage.setItem("signup_email", emailRef.current.trim());
+    localStorage.setItem("signup_password", passwordRef.current.trim());
+    localStorage.setItem(
+      "signup_password_check",
+      passwordCheckRef.current.trim()
+    );
 
-    window.location.href = "/signup/step2";
+    navigate("/signup/step2");
   };
 
   return {
-    email,
-    password,
-    passwordCheck,
     helperEmail,
     helperPassword,
     helperPasswordCheck,
     onEmailBlur,
     onPasswordBlur,
     onPasswordCheckBlur,
+    onEmailChange,
+    onPasswordChange,
+    onPasswordCheckChange,
     handleNext,
     isNextActive,
   };

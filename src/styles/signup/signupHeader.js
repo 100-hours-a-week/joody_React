@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const HeaderWrapper = styled.header`
   position: absolute;
-  top: 140px;
+  top: 100px;
   left: 50%;
   transform: translateX(-50%);
 
@@ -12,6 +12,21 @@ export const HeaderWrapper = styled.header`
   padding-left: 24px;
   box-sizing: border-box;
   z-index: 10;
+
+  /* 💻 Laptop */
+  ${({ theme }) => theme.media.laptop`
+    top: 80px;
+  `}
+
+  /* 📱 Tablet */
+  ${({ theme }) => theme.media.tablet`
+    top: 70px;
+  `}
+
+  /* 📱 Mobile */
+  ${({ theme }) => theme.media.mobile`
+    top: 50px;
+  `}
 `;
 
 export const BackButton = styled.img`

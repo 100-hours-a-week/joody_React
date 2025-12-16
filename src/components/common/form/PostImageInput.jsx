@@ -1,3 +1,4 @@
+import React, { forwardRef } from "react";
 import {
   FormGroup,
   PostInputLabel,
@@ -5,27 +6,32 @@ import {
 } from "../../../styles/postCreate/postCreate.style";
 import styled from "styled-components";
 
-function PostImageInput({ onSelect, fileName }) {
+const PostImageInput = forwardRef(function PostImageInput(
+  { onSelect, fileName },
+  ref
+) {
   return (
     <FormGroup>
       <PostInputLabel htmlFor="post_image_input">이미지</PostInputLabel>
       <StyledPostImageInput
+        ref={ref}
         type="file"
         id="post_image_input"
         name="image"
         accept="image/*"
         onChange={onSelect}
       />
-      {fileName ? (
+
+      {fileName && (
         <FileNameText>
           현재 이미지: <strong>{fileName}</strong>
         </FileNameText>
-      ) : null}
+      )}
     </FormGroup>
   );
-}
+});
 
-export default PostImageInput;
+export default React.memo(PostImageInput);
 
 const FileNameText = styled.div`
   margin-top: 8px;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { fetchUserProfile } from "../../../api/user";
 import {
@@ -112,4 +112,4 @@ function MainHeader() {
   );
 }
 
-export default MainHeader;
+export default memo(MainHeader);

@@ -12,7 +12,7 @@ import {
 import styled from "styled-components";
 
 function ProfileEditForm({ state, handlers }) {
-  const { profileImage, uploading, email, nickname, helper, editEnabled } =
+  const { profileImage, uploading, email, helper, editEnabled, nicknameRef } =
     state;
   const {
     handleFileSelect,
@@ -42,7 +42,7 @@ function ProfileEditForm({ state, handlers }) {
           label="닉네임*"
           id="nickname"
           name="nickname"
-          value={nickname}
+          defaultValue={nicknameRef.current}
           placeholder="닉네임을 입력하세요."
           onChange={handleNicknameInput}
         />

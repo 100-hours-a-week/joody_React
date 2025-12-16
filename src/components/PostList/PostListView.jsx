@@ -1,35 +1,38 @@
 import { useNavigate } from "react-router-dom";
+import { useCallback, memo } from "react";
 import PostCard from "./PostCard";
-import {
-  PostContainer,
-  SearchBox,
-} from "../../styles/postlist/postlistLayout.style";
+import SearchInput from "./SearchInput";
+import { PostContainer } from "../../styles/postlist/postlistLayout.style";
+import Spinner from "../common/spinner/Spinner";
+
+const PostList = memo(({ posts, handlePostClick }) => {
+  return posts.map((post) => (
+    <PostCard
+      key={post.id}
+      post={post}
+      onClick={handlePostClick}
+    />
+  ));
+});
+
+PostList.displayName = "PostList";
 
 function PostListView({ posts, keyword, setKeyword, sentinelRef, isLoading }) {
   const navigate = useNavigate();
 
+  const handlePostClick = useCallback((postId) => {
+    navigate(`/post/${postId}`);
+  }, [navigate]);
+
   return (
     <PostContainer>
-      <SearchBox>
-        <input
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          placeholder="검색어를 입력하세요."
-        />
-        <img src="/img/search_btn.svg" alt="search" />
-      </SearchBox>
+      <SearchInput keyword={keyword} setKeyword={setKeyword} />
 
-      {posts.map((post) => (
-        <PostCard
-          key={post.id}
-          post={post}
-          onClick={() => navigate(`/post/${post.id}`)}
-        />
-      ))}
+      <PostList posts={posts} handlePostClick={handlePostClick} />
 
       <div ref={sentinelRef} style={{ height: 1 }} />
 
-      {isLoading && <p>불러오는 중...</p>}
+      {isLoading && <Spinner />}
     </PostContainer>
   );
 }

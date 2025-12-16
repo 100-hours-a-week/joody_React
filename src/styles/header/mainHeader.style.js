@@ -76,10 +76,6 @@ export const ProfileImg = styled.img`
   position: relative;
   z-index: 2;
   border: 2px solid #4baa7d;
-
-  &:hover {
-    transform: scale(1.05);
-  }
 `;
 
 export const DropdownMenu = styled.ul`

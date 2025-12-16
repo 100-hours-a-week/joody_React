@@ -3,19 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { usePostDetail } from "../hooks/usePostDetail";
 
 import MainHeader from "../components/common/header/MainHeader";
-import PostInfos from "../components/PostDetail/PostInfos";
-import PostContent from "../components/PostDetail/PostContent";
-import PostStats from "../components/PostDetail/PostStats";
-import CommentInput from "../components/PostDetail/CommentInput";
-import CommentList from "../components/PostDetail/CommentList";
+import PostDetailLayout from "../components/PostDetail/PostDetailLayout";
 import DeletePostModal from "../components/PostDetail/DeletePostModal";
 import DeleteCommentModal from "../components/PostDetail/DeleteCommentModal";
+import Spinner from "../components/common/spinner/Spinner";
 
-import {
-  PostContainer,
-  CommentContainer,
-  PostTitle,
-} from "../styles/postDetail/postDetail.style";
+import { formatImageUrl } from "../../utils/format";
 
 export default function PostDetailPage() {
   const navigate = useNavigate();
@@ -40,65 +33,41 @@ export default function PostDetailPage() {
     closeDeleteModals,
   } = usePostDetail(postId);
 
-  if (loading) return <div>로딩중...</div>;
+  if (loading) return <Spinner />;
   if (error) return <div>{error}</div>;
   if (!post) return null;
 
   console.log(comments);
+  console.log(post);
 
+  // ⭐ post 관련 UI 핸들러만 전달
+  const uiHandlers = {
+    authorImg: formatImageUrl(post.authorProfileImage),
+    onEdit: () => navigate(`/post/edit/${postId}`),
+    onToggleLike: handleLike,
+    onCommentChange: handleCommentChange,
+    onCommentSubmit: handleCommentSubmit,
+    onEditComment: handleEditComment,
+    onDeleteComment: openDeleteCommentModal, // 모달만 여는 함수 전달
+  };
   return (
     <>
       <MainHeader />
-
-      <PostContainer>
-        <PostTitle>{post.title}</PostTitle>
-
-        <PostInfos
-          authorImg={
-            post.authorProfileImage
-              ? post.authorProfileImage.startsWith("http")
-                ? post.authorProfileImage
-                : `http://localhost:8080${post.authorProfileImage}`
-              : "/img/original_profile.png"
-          }
-          author={post.author}
-          date={post.createdAt}
-          editable={post.editable}
-          onEdit={() => navigate(`/post/edit/${postId}`)}
-          onDelete={openDeletePostModal}
-        />
-
-        <PostContent content={post.content} image={post.postImage} />
-
-        <PostStats
-          likes={post.likes}
-          comments={post.commentCount}
-          views={post.views}
-          liked={liked}
-          onToggleLike={handleLike}
-        />
-      </PostContainer>
-
-      <CommentContainer>
-        <CommentInput
-          value={commentValue}
-          onChange={handleCommentChange}
-          onSubmit={handleCommentSubmit}
-          isEditing={isEditing}
-        />
-        <CommentList
-          comments={comments}
-          onEdit={handleEditComment}
-          onDelete={openDeleteCommentModal}
-        />
-      </CommentContainer>
+      <PostDetailLayout
+        post={post}
+        comments={comments}
+        liked={liked}
+        commentValue={commentValue}
+        isEditing={isEditing}
+        handlers={uiHandlers}
+        onDeletePost={openDeletePostModal} // 🔥 삭제 버튼 동작만 넘김
+      />
 
       <DeletePostModal
         open={modals.postDeleteOpen}
         onCancel={closeDeleteModals}
         onConfirm={handleDeletePost}
       />
-
       <DeleteCommentModal
         open={modals.commentDeleteOpen}
         onCancel={closeDeleteModals}

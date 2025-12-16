@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   PostPageWrapper,
   WritePostButton,
@@ -13,4 +14,4 @@ function PostListLayout({ onWrite }) {
   );
 }
 
-export default PostListLayout;
+export default memo(PostListLayout);

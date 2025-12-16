@@ -1,46 +1,52 @@
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePostDetail } from "../hooks/usePostDetail";
-
+import { usePostForm } from "../hooks/usePostForm";
 import MainHeader from "../components/common/header/MainHeader";
 import PostForm from "../components/common/form/PostForm";
-import { apiRequest } from "../api/apiRequest";
+import Spinner from "../components/common/spinner/Spinner";
 
 function PostEditPage() {
   const { postId } = useParams();
   const { post, loading, error } = usePostDetail(postId);
   const navigate = useNavigate();
 
-  if (loading) return <div>로딩중...</div>;
-  if (error) return <div>{error}</div>;
-  if (!post) return null;
+  const form = usePostForm({
+    mode: "edit",
+    postId,
+    initialTitle: post?.title ?? "",
+    initialContent: post?.content ?? "",
+    initialImage: post?.postImage ?? "",
+    onSuccess: () => navigate(`/post/${postId}`), // ⭐ 여기서 이동 처리
+  });
 
-  const handleEditSubmit = async (formData, postId) => {
-    const res = await apiRequest(`/posts/${postId}`, {
-      method: "PUT",
-      body: formData,
-    });
+  // ⭐ post 데이터가 들어온 후 validate 강제 실행
+  useEffect(() => {
+    if (post) {
+      form.titleRef.current = post.title;
+      form.contentRef.current = post.content;
 
-    if (res.ok) {
-      // 성공 후 게시글 상세 페이지로 이동
-      navigate(`/post/${postId}`);
+      if (form.titleInputRef.current)
+        form.titleInputRef.current.value = post.title;
+      if (form.contentInputRef.current)
+        form.contentInputRef.current.value = post.content;
 
-      // 토스트 사용 중이면
-      // showToast("게시글이 수정되었습니다.");
-    } else {
-      alert("게시글 수정에 실패했습니다.");
+      form.forceValidate && form.forceValidate();
     }
-  };
+  }, [post]);
+
+  if (loading) return <Spinner />;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
       <MainHeader />
       <PostForm
-        mode="edit" // form 모드 전달
-        postId={postId}
+        mode="edit"
         initialTitle={post.title}
         initialContent={post.content}
         initialImage={post.postImage}
-        onSubmit={handleEditSubmit}
+        {...form}
       />
     </>
   );

@@ -1,9 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { signupRequest } from "../api/user";
 import { NICKNAME_REGEX, validateNickname } from "../../utils/InputValidators";
 
 export default function useSignupStep2() {
-  const [nickname, setNickname] = useState("");
+  const nicknameRef = useRef("");
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState("");
 
@@ -11,62 +11,78 @@ export default function useSignupStep2() {
   const [helperNickname, setHelperNickname] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmActive, setIsConfirmActive] = useState(false);
 
-  const onNicknameBlur = (e) => {
-    const v = e.target.value.replace(/\s+/g, "");
-    setNickname(v);
-    const msg = validateNickname(v);
-    setHelperNickname(msg);
+  const validate = useCallback(() => {
+    const v = nicknameRef.current.trim();
+    const valid = NICKNAME_REGEX.test(v) && !!avatar;
+    setIsConfirmActive(valid);
+  }, [avatar]);
+
+  useEffect(() => {
+    validate();
+  }, [avatar, validate]);
+
+  const onNicknameBlur = () => {
+    setHelperNickname(validateNickname(nicknameRef.current));
   };
 
   const onNicknameChange = (e) => {
-    const inputValue = e.target.value;
+    const value = e.target.value;
 
-    // 공백 포함 여부 체크
-    if (/\s/.test(inputValue)) {
+    if (/\s/.test(value)) {
       setHelperNickname("* 닉네임에는 공백을 포함할 수 없습니다.");
+      nicknameRef.current = "";
+      setIsConfirmActive(false);
+      validate();
       return;
     }
 
-    // 공백 제거 & 길이 제한
-    const v = inputValue.replace(/\s+/g, "");
-    if (v.length > 8) return;
+    const v = value.replace(/\s+/g, "");
 
-    setNickname(v);
+    if (v.length > 8) {
+      setHelperNickname("* 닉네임은 8자까지 입력 가능합니다.");
+      // nicknameRef.current = v.slice(0, 8);
+      setIsConfirmActive(false);
+      return;
+    }
 
-    // 입력 중 검증
+    nicknameRef.current = v;
+
     if (!NICKNAME_REGEX.test(v)) {
       setHelperNickname("* 닉네임은 공백 없이 1~8자까지 입력 가능합니다.");
     } else {
       setHelperNickname("");
     }
+
+    validate(); // ⭐ 항상 실행
   };
 
   const onAvatarChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) {
       setAvatar(null);
       setAvatarPreview("");
       setHelperAvatar("* 프로필 사진을 추가하세요.");
+      validate();
       return;
     }
 
     if (!file.type.startsWith("image/")) {
       setHelperAvatar("* 이미지 파일만 업로드 가능합니다.");
+      validate();
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = (ev) => {
       setAvatar(file);
-      setAvatarPreview(event.target.result);
+      setAvatarPreview(ev.target.result);
       setHelperAvatar("");
+      validate();
     };
-
     reader.readAsDataURL(file);
   };
-
-  const isConfirmActive = NICKNAME_REGEX.test(nickname) && !!avatar;
 
   const handleSubmit = useCallback(async () => {
     if (!isConfirmActive) return;
@@ -76,7 +92,12 @@ export default function useSignupStep2() {
     const password_check = localStorage.getItem("signup_password_check");
 
     const formData = new FormData();
-    const userData = { email, password, password_check, nickname };
+    const userData = {
+      email,
+      password,
+      password_check,
+      nickname: nicknameRef.current,
+    };
 
     formData.append(
       "user",
@@ -102,18 +123,18 @@ export default function useSignupStep2() {
     } finally {
       setIsLoading(false);
     }
-  }, [nickname, avatar, isConfirmActive]);
+  }, [avatar, isConfirmActive]);
 
+  // ⭐ 반드시 return 추가!!
   return {
-    nickname,
     avatarPreview,
     helperAvatar,
     helperNickname,
-    isLoading,
     onNicknameBlur,
     onNicknameChange,
     onAvatarChange,
     handleSubmit,
     isConfirmActive,
+    isLoading,
   };
 }

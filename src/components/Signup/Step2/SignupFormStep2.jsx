@@ -1,10 +1,7 @@
 import AvatarUpload from "./AvatarUpload";
-<<<<<<< HEAD
-import NicknameInput from "./NicknameInput";
-=======
 import TextInput from "../../common/inputs/TextInput";
->>>>>>> feature/dev1
 import ConfirmButton from "./ConfirmButton";
+import InputHelper from "../../common/inputs/InputHelper";
 import { SignupTitle } from "../../../styles/signup/signupLayout";
 import useSignupStep2 from "../../../hooks/useSignupStep2";
 
@@ -12,16 +9,10 @@ function SignupFormStep2() {
   const {
     avatarPreview,
     nickname,
-<<<<<<< HEAD
-    helperAvatar,
-    helperNickname,
-    onAvatarChange,
-=======
     helperNickname,
     helperAvatar,
     onAvatarChange,
     onNicknameBlur,
->>>>>>> feature/dev1
     onNicknameChange,
     handleSubmit,
     isConfirmActive,
@@ -39,20 +30,15 @@ function SignupFormStep2() {
         onChange={onAvatarChange}
         helper={helperAvatar}
       />
-
-<<<<<<< HEAD
-      <NicknameInput
-        nickname={nickname}
-        onChange={onNicknameChange}
-        helper={helperNickname}
-=======
       <TextInput
-        {...nickname.bind}
-        helper={helperNickname || nickname.error}
+        label="닉네임"
+        id="nickname"
+        name="nickname"
+        placeholder="닉네임을 입력해주세요."
         onChange={onNicknameChange}
         onBlur={onNicknameBlur}
->>>>>>> feature/dev1
       />
+      <InputHelper message={helperNickname} />
 
       <ConfirmButton
         disabled={!isConfirmActive || isLoading}

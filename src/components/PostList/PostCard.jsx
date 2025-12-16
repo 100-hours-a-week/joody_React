@@ -1,5 +1,4 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useMemo } from "react";
 import {
   Card,
   Title,
@@ -14,11 +13,21 @@ import {
   AuthorName,
 } from "../../styles/postlist/postlist.style";
 
-function PostCard({ post }) {
-  const navigate = useNavigate();
+function PostCard({ post, onClick }) {
+  const formattedDate = useMemo(() => {
+    return post.createdAt?.replace("T", " ").slice(0, 19);
+  }, [post.createdAt]);
+
+  const avatarSrc = useMemo(() => {
+    if (!post.authorProfileImage) return "/img/profile_1.jpeg";
+    if (post.authorProfileImage.startsWith("http")) return post.authorProfileImage;
+    return `http://localhost:8080${post.authorProfileImage}`;
+  }, [post.authorProfileImage]);
+
+  const handleClick = () => onClick(post.id);
 
   return (
-    <Card onClick={() => navigate(`/post/${post.id}`)}>
+    <Card onClick={handleClick}>
       <Title>{post.title}</Title>
 
       <StatsRow>
@@ -37,23 +46,26 @@ function PostCard({ post }) {
           </StatItem>
         </StatsLeft>
 
-        <DateText>{post.createdAt?.replace("T", " ").slice(0, 19)}</DateText>
+        <DateText>{formattedDate}</DateText>
       </StatsRow>
 
       <AuthorRow>
-        <AuthorAvatar
-          src={
-            post.authorProfileImage
-              ? post.authorProfileImage.startsWith("http")
-                ? post.authorProfileImage
-                : `http://localhost:8080${post.authorProfileImage}`
-              : "/img/profile_1.jpeg"
-          }
-        />
+        <AuthorAvatar src={avatarSrc} />
         <AuthorName>{post.author || "익명"}</AuthorName>
       </AuthorRow>
     </Card>
   );
 }
 
-export default PostCard;
+export default React.memo(PostCard, (prevProps, nextProps) => {
+  return (
+    prevProps.post.id === nextProps.post.id &&
+    prevProps.post.title === nextProps.post.title &&
+    prevProps.post.likeCount === nextProps.post.likeCount &&
+    prevProps.post.commentCount === nextProps.post.commentCount &&
+    prevProps.post.viewCount === nextProps.post.viewCount &&
+    prevProps.post.createdAt === nextProps.post.createdAt &&
+    prevProps.post.author === nextProps.post.author &&
+    prevProps.post.authorProfileImage === nextProps.post.authorProfileImage
+  );
+});

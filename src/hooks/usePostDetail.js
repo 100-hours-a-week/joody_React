@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   fetchComments,
   createComment,
@@ -13,9 +13,11 @@ export function usePostDetail(postId) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
-  const [commentValue, setCommentValue] = useState("");
+
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
+
+  const [commentValue, setCommentValue] = useState("");
 
   const [modals, setModals] = useState({
     postDeleteOpen: false,
@@ -26,7 +28,7 @@ export function usePostDetail(postId) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const isFetched = useRef(false); // StrictMode 중복 방지
+  const isFetched = useRef(false);
   const likePendingRef = useRef(false);
 
   useEffect(() => {
@@ -84,7 +86,6 @@ export function usePostDetail(postId) {
         setPost(formattedPost);
         setLiked(Boolean(likedValue));
 
-        // 🔥 댓글 경로 안전하게 처리
         const rawComments =
           commentsRes.data?.data?.content ?? commentsRes.data?.content ?? [];
 
@@ -109,18 +110,13 @@ export function usePostDetail(postId) {
     init();
   }, [postId]);
 
-  // ==========================
   // 게시글 삭제
-  // ==========================
   const handleDeletePost = async () => {
     try {
       const { ok } = await deletePostApi(postId);
       if (!ok) return;
 
-      // ✅ 삭제 성공 시 목록 페이지로 이동
-      // 라우팅 경로에 맞게 수정해서 써!
       window.location.href = "/postlist";
-      // 예전처럼 해시 라우터면 → window.location.hash = "#/postlist";
     } catch (err) {
       console.error("게시글 삭제 실패:", err);
     } finally {
@@ -128,16 +124,8 @@ export function usePostDetail(postId) {
     }
   };
 
-  // ==========================
-  // 댓글 입력 상태
-  // ==========================
-  const handleCommentChange = (value) => setCommentValue(value);
-
-  // ==========================
   // 댓글 작성 & 수정
-  // ==========================
-  const handleCommentSubmit = async () => {
-    const text = commentValue.trim();
+  const handleCommentSubmit = async (text, reset) => {
     const userId = localStorage.getItem("userId");
     if (!text || !userId) return;
 
@@ -154,7 +142,9 @@ export function usePostDetail(postId) {
         )
       );
 
-      resetCommentState();
+      reset(); // CommentInput 내부 state 초기화
+      setIsEditing(false);
+      setEditingId(null);
       return;
     }
 
@@ -177,29 +167,31 @@ export function usePostDetail(postId) {
       ...prev,
       commentCount: prev.commentCount + 1,
     }));
-    resetCommentState();
-  };
 
-  const resetCommentState = () => {
-    setCommentValue("");
+    reset(); //  입력창 초기화
     setIsEditing(false);
     setEditingId(null);
   };
 
+  // const resetCommentState = () => {
+
+  //   setIsEditing(false);
+  //   setEditingId(null);
+  // };
+
   // 댓글 수정
-  const handleEditComment = (id) => {
+  const handleEditComment = useCallback((id) => {
     const target = comments.find((c) => c.id === id);
     if (!target) return;
 
     setCommentValue(target.content);
     setIsEditing(true);
     setEditingId(id);
-  };
+  });
 
-  // ==========================
   // 댓글 삭제
-  // ==========================
-  const handleDeleteComment = async () => {
+
+  const handleDeleteComment = useCallback(async () => {
     const id = modals.targetCommentId;
     const { ok } = await deleteComment(postId, id);
 
@@ -213,11 +205,10 @@ export function usePostDetail(postId) {
     }
 
     closeDeleteModals();
-  };
+  });
 
-  // ==========================
   // 좋아요 토글
-  // ==========================
+
   const handleLike = async () => {
     if (!post || likePendingRef.current) return;
 
@@ -287,7 +278,7 @@ export function usePostDetail(postId) {
     modals,
     loading,
     error,
-    handleCommentChange,
+    // handleCommentChange,
     handleCommentSubmit,
     handleLike,
     handleEditComment,
